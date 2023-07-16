@@ -78,6 +78,17 @@ router.post("/student/register", async (req, res, next) => {
   }
 });
 
+router.post("/student/test", async (req, res, next) => {
+  try {
+    await prisma.test.create({
+      data: req.body,
+    });
+    res.send("done");
+  } catch (error) {
+    next(error);
+  }
+});
+
 // DELETE
 router.delete("/student/:id", async (req, res, next) => {
   try {
