@@ -43,6 +43,28 @@ router.get("/teacher/:email", async (req, res, next) => {
   }
 });
 
+router.get("/test/:id", async (req, res, next) => {
+  try {
+    const studentId = await prisma.student.findUnique({
+      where: {
+        id: req.params.id,
+      },
+    });
+    const test = await prisma.test.findMany({
+      where: {
+        testId: studentId.id,
+      },
+    });
+    if (!test) {
+      res.statusCode = 404;
+      throw new Error("Students Not found");
+    }
+    res.send(test);
+  } catch (error) {
+    next(error);
+  }
+});
+
 // POST request
 router.post("/teacher/register", async (req, res, next) => {
   try {
