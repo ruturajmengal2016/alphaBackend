@@ -21,6 +21,7 @@ model Teacher {
 model Student {
   id        String  @id @default(auto()) @map("_id") @db.ObjectId
   name      String
+  email     String
   roll_no   Int
   age       Int
   gender    String
