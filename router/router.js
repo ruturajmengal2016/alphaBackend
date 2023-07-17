@@ -2,12 +2,12 @@ const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
 const router = require("express").Router();
 
-// GET request
-router.get("/login/:email", async (req, res, next) => {
+// Post request
+router.post("/login", async (req, res, next) => {
   try {
     const teacher = await prisma.teacher.findUnique({
       where: {
-        email: req.params.email,
+        email: req.body.email,
       },
     });
     if (!teacher) {
@@ -15,12 +15,13 @@ router.get("/login/:email", async (req, res, next) => {
       throw new Error("Sorry! You don't have an account.");
     }
     res.statusCode = 200;
-    res.send("login successfully...");
+    res.send(teacher);
   } catch (error) {
     next(error);
   }
 });
 
+// Get request
 router.get("/teacher/:email", async (req, res, next) => {
   try {
     const teacherId = await prisma.teacher.findUnique({
@@ -86,6 +87,7 @@ router.post("/student/register", async (req, res, next) => {
       .create({
         data: {
           name: req.body.name,
+          email: req.body.email,
           age: req.body.age,
           class: req.body.class,
           gender: req.body.gender,
@@ -114,13 +116,11 @@ router.post("/student/test", async (req, res, next) => {
 // DELETE
 router.delete("/student/:id", async (req, res, next) => {
   try {
-    await prisma.student
-      .delete({
-        where: {
-          id: req.params.id,
-        },
-      })
-      .catch((error) => next(error));
+    await prisma.student.delete({
+      where: {
+        id: req.params.id,
+      },
+    });
     res.send("delete successfully...");
   } catch (error) {
     next(error);
